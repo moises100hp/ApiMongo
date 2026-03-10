@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="ApiMongo/ApiMongo.csproj" />
+  </Folder>
+  <Folder Name="/testes/">
+    <Project Path="ApiMongo.Testes/ApiMongo.Testes.csproj" Id="7e0fbbf1-9a23-4df5-9998-5a26c8083c00" />
+  </Folder>
+</Solution>

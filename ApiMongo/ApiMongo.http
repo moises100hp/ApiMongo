@@ -1,0 +1,6 @@
+@ApiMongo_HostAddress = http://localhost:5188
+
+GET {{ApiMongo_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
