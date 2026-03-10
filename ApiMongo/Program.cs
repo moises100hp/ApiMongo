@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,9 +29,26 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen( c =>
+builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo {  Title = "Curso .NET Udemy", Version = "v1" });
+    c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Curso .NET Udemy", Version = "v1" });
+    c.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "JWT Authorization header using the Bearer scheme."
+    });
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "bearer" }
+                    },
+        Array.Empty<string>()
+        }
+    });
 });
 
 #region [Database]
@@ -43,6 +61,7 @@ builder.Services.AddSingleton(typeof(IMongoRepository<>), typeof(MongoRepository
 builder.Services.AddSingleton(typeof(INewsService), typeof(NewsService));
 builder.Services.AddSingleton(typeof(IVideoService), typeof(VideoService));
 builder.Services.AddTransient(typeof(IUploadService), typeof(UploadService));
+builder.Services.AddTransient(typeof(GalleryService));
 #endregion
 
 #region [AutoMapper]
