@@ -1,8 +1,11 @@
 using ApiMongo.Infra;
 using ApiMongo.Mappers;
 using ApiMongo.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -50,6 +53,23 @@ builder.Services.AddAutoMapper(cfg =>
 }, AppDomain.CurrentDomain.GetAssemblies());
 #endregion
 
+#region [JWT]
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII
+                .GetBytes(builder.Configuration.GetSection("tokenManagement:secret").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
+
+#endregion
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -71,6 +91,8 @@ app.UseStaticFiles(new StaticFileOptions
 });
 
 #endregion
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

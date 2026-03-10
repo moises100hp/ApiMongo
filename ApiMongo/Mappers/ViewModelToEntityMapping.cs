@@ -12,6 +12,7 @@ namespace ApiMongo.Mappers
 
             CreateMap<NewsViewModel, News>();
             CreateMap<VideoViewModel, Video>();
+            CreateMap<GalleryViewModel, Gallery>();
 
             #endregion
 
@@ -19,6 +20,7 @@ namespace ApiMongo.Mappers
 
             CreateMap<Result<NewsViewModel>, News>();
             CreateMap<Result<VideoViewModel>, Video>();
+            CreateMap<Result<GalleryViewModel>, Gallery>();
 
             #endregion
         }

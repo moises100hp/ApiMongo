@@ -1,14 +1,16 @@
-﻿using ImageProcessor;
+﻿using ApiMongo.Services;
+using ImageProcessor;
 using ImageProcessorCore.Plugins.WebP.Formats;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SixLabors.ImageSharp.Formats.Webp;
 using SixLabors.ImageSharp;
-using ApiMongo.Services;
+using SixLabors.ImageSharp.Formats.Webp;
 
 namespace ApiMongo.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class UploadController : ControllerBase
     {
         private readonly ILogger<UploadController> _logger;

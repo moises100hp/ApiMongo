@@ -1,12 +1,14 @@
 ﻿using ApiMongo.Entities;
 using ApiMongo.Services;
 using ApiMongo.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiMongo.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class NewsExternalController : ControllerBase
     {
         private readonly ILogger<NewsExternalController> _logger;

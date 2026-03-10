@@ -1,4 +1,5 @@
 ﻿using ApiMongo.Entities;
+using ApiMongo.ViewModels;
 using System.Collections.Generic;
 
 namespace ApiMongo.Infra

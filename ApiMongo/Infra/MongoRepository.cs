@@ -1,4 +1,5 @@
 ﻿using ApiMongo.Entities;
+using ApiMongo.ViewModels;
 using MongoDB.Driver;
 
 namespace ApiMongo.Infra
@@ -70,6 +71,5 @@ namespace ApiMongo.Infra
             _model.ReplaceOne(news => news.Id == id, news);
         }
 
-      
     }
 }
