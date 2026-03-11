@@ -27,12 +27,23 @@ namespace ApiMongo.Controllers
         [HttpGet("{id:length(24)}", Name = "GetGallery")]
         public ActionResult<GalleryViewModel> Get(string id)
         {
-            var news = _galleryService.Get(id);
+            var gallery = _galleryService.Get(id);
 
-            if(news is null)
+            if(gallery is null)
                 return NotFound();
 
-            return Ok(news);
+            return Ok(gallery);
+        }
+
+        [HttpGet]
+        public ActionResult<GalleryViewModel> GetBySlug(string slug)
+        {
+            var gallery = _galleryService.GetBySlug(slug);
+
+            if(gallery is null)
+                return NotFound();
+
+            return Ok(gallery);
         }
 
         [HttpPost]

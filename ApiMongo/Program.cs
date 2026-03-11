@@ -1,11 +1,15 @@
 using ApiMongo.Infra;
 using ApiMongo.Mappers;
 using ApiMongo.Services;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,12 +60,57 @@ builder.Services.Configure<DatabaseSetting>(builder.Configuration.GetSection(nam
 builder.Services.AddSingleton<IDatabaseSetting>(sp => sp.GetRequiredService<IOptions<DatabaseSetting>>().Value);
 #endregion
 
+#region [HealthCheck]
+
+var baseUri = builder.Configuration.GetSection("DatabaseSetting:ConnectionString").Value;
+var dbName = builder.Configuration.GetSection("DatabaseSetting:db_portal").Value;
+
+var urlBuilder = new MongoUrlBuilder(baseUri)
+{
+    DatabaseName = dbName
+};
+
+var mongoUrl = urlBuilder.ToMongoUrl();
+
+
+builder.Services.AddHealthChecks()
+    .AddMongoDb(
+            sp => sp.GetRequiredService<IMongoClient>(),
+            name: "mongodb", tags: ["db", "data"]);
+
+builder.Services.AddHealthChecksUI(options =>
+{
+    options.SetEvaluationTimeInSeconds(15); //time in seconds between check
+    options.MaximumHistoryEntriesPerEndpoint(60); //maximum history of checks
+    options.SetApiMaxActiveRequests(1);//api request concurrency
+
+    options.AddHealthCheckEndpoint("default api", "/health"); //map health check api
+}).AddInMemoryStorage();
+
+#endregion
+
 #region [DI]
+
 builder.Services.AddSingleton(typeof(IMongoRepository<>), typeof(MongoRepository<>));
 builder.Services.AddSingleton(typeof(INewsService), typeof(NewsService));
 builder.Services.AddSingleton(typeof(IVideoService), typeof(VideoService));
 builder.Services.AddTransient(typeof(IUploadService), typeof(UploadService));
 builder.Services.AddTransient(typeof(GalleryService));
+builder.Services.AddSingleton<IMongoClient>(sp =>
+{
+    return new MongoClient(mongoUrl);
+});
+
+builder.Services.AddScoped(sp =>
+{
+    var client = sp.GetRequiredService<IMongoClient>();
+    var databaseName = builder.Configuration.GetSection("DatabaseSetting:db_portal").Value;
+    return client.GetDatabase(databaseName);
+});
+
+builder.Services.AddSingleton(typeof(IMemoryCache), typeof(MemoryCache));
+builder.Services.AddSingleton(typeof(ICacheService), typeof(CacheMemoryService));
+
 #endregion
 
 #region [AutoMapper]
@@ -97,6 +146,16 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "v1"));
 }
+
+#region [HealthCheck]
+
+app.UseHealthChecks("/health", new HealthCheckOptions
+{
+    Predicate = _ => true,
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+}).UseHealthChecksUI(health => health.UIPath = "/healthui");
+
+#endregion
 
 app.UseHttpsRedirection();
 
