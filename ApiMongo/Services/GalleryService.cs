@@ -24,12 +24,12 @@ namespace ApiMongo.Services
         public Result<GalleryViewModel> Get(int page, int quantidade)
         {
             var keyCache = $"{keyForCache}/{page}/{quantidade}";
-            var gallery = _cacheService.Get<Result<GalleryViewModel>>(keyForCache);
+            var gallery = _cacheService.Get<Result<GalleryViewModel>>(keyCache);
 
             if(gallery is null)
             {
                 gallery = _mapper.Map<Result<GalleryViewModel>>(_gallery.Get(page, quantidade));
-                _cacheService.Set(keyForCache, gallery);
+                _cacheService.Set(keyCache, gallery);
             }
 
             return gallery;

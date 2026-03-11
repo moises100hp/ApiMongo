@@ -25,12 +25,12 @@ namespace ApiMongo.Services
         public Result<NewsViewModel> GetAll(int page, int quantidade)
         {
             var keyCache = $"{keyForCache}/{page}/{quantidade}";
-            var news = _cacheService.Get<Result<NewsViewModel>>(keyForCache);
+            var news = _cacheService.Get<Result<NewsViewModel>>(keyCache);
 
             if (news is null)
             {
                 news = _mapper.Map<Result<NewsViewModel>>(_news.Get(page, quantidade));
-                _cacheService.Set(keyForCache, news);
+                _cacheService.Set(keyCache, news);
             }
 
             return news;
@@ -39,7 +39,7 @@ namespace ApiMongo.Services
         public NewsViewModel Get(string id)
         {
             var keyCache = $"{keyForCache}/{id}";
-            var news = _cacheService.Get<NewsViewModel>(keyForCache);
+            var news = _cacheService.Get<NewsViewModel>(keyCache);
 
             if (news is null)
             {
@@ -53,12 +53,12 @@ namespace ApiMongo.Services
         public NewsViewModel GetBySlug(string slug)
         {
             var keyCache = $"{keyForCache}/{slug}";
-            var news = _cacheService.Get<NewsViewModel>(keyForCache);
+            var news = _cacheService.Get<NewsViewModel>(keyCache);
 
             if (news is null)
             {
                 news = _mapper.Map<NewsViewModel>(_news.GetBySlug(slug));
-                _cacheService.Set(slug, news);
+                _cacheService.Set(keyCache, news);
             }
 
             return news;

@@ -60,6 +60,16 @@ builder.Services.Configure<DatabaseSetting>(builder.Configuration.GetSection(nam
 builder.Services.AddSingleton<IDatabaseSetting>(sp => sp.GetRequiredService<IOptions<DatabaseSetting>>().Value);
 #endregion
 
+#region [Cache]
+
+builder.Services.AddDistributedRedisCache(options =>
+{
+    options.Configuration =
+        builder.Configuration.GetSection("Redis:ConnectionString").Value;
+});
+
+#endregion
+
 #region [HealthCheck]
 
 var baseUri = builder.Configuration.GetSection("DatabaseSetting:ConnectionString").Value;
@@ -72,8 +82,8 @@ var urlBuilder = new MongoUrlBuilder(baseUri)
 
 var mongoUrl = urlBuilder.ToMongoUrl();
 
-
 builder.Services.AddHealthChecks()
+    .AddRedis(builder.Configuration.GetSection("Redis:ConnectionString").Value, tags: new string[] { "db", "data" })
     .AddMongoDb(
             sp => sp.GetRequiredService<IMongoClient>(),
             name: "mongodb", tags: ["db", "data"]);
@@ -86,6 +96,7 @@ builder.Services.AddHealthChecksUI(options =>
 
     options.AddHealthCheckEndpoint("default api", "/health"); //map health check api
 }).AddInMemoryStorage();
+
 
 #endregion
 
@@ -109,7 +120,8 @@ builder.Services.AddScoped(sp =>
 });
 
 builder.Services.AddSingleton(typeof(IMemoryCache), typeof(MemoryCache));
-builder.Services.AddSingleton(typeof(ICacheService), typeof(CacheMemoryService));
+//builder.Services.AddSingleton(typeof(ICacheService), typeof(CacheMemoryService));
+builder.Services.AddSingleton(typeof(ICacheService), typeof(CacheRedisService));
 
 #endregion
 
