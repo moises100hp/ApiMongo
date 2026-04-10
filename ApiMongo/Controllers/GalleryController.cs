@@ -21,9 +21,14 @@ namespace ApiMongo.Controllers
             _galleryService = galleryService;
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{page}/{quantidade}")]
         public ActionResult<Result<GalleryViewModel>> Get(int page, int quantidade) => _galleryService.Get(page, quantidade);
 
+
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet("{id:length(24)}", Name = "GetGallery")]
         public ActionResult<GalleryViewModel> Get(string id)
         {
@@ -35,6 +40,8 @@ namespace ApiMongo.Controllers
             return Ok(gallery);
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
         public ActionResult<GalleryViewModel> GetBySlug(string slug)
         {
@@ -46,6 +53,8 @@ namespace ApiMongo.Controllers
             return Ok(gallery);
         }
 
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
         public ActionResult<GalleryViewModel> Create(GalleryViewModel news)
         {
@@ -54,6 +63,8 @@ namespace ApiMongo.Controllers
             return CreatedAtRoute("GetGallery", new { id = result.Id.ToString() }, result);
         }
 
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut]
         public async Task<ActionResult<GalleryViewModel>> Update(string id, GalleryViewModel galleryIn)
         {
@@ -69,6 +80,8 @@ namespace ApiMongo.Controllers
             return CreatedAtRoute("GetGallery", new { id = gallery.Id.ToString() }, gallery);
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete]
         public ActionResult Delete(string id)
         {

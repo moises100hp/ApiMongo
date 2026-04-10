@@ -22,6 +22,8 @@ namespace ApiMongo.Controllers
             _newsService = newsService;
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpGet]
         public ActionResult<Result<NewsViewModel>> Get(int page, int quantidade) => _newsService.GetAll(page, quantidade);
 
@@ -33,9 +35,11 @@ namespace ApiMongo.Controllers
             if (news is null)
                 return NotFound();
 
-            return news;
+            return Ok(news);
         }
 
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPost]
         public ActionResult<NewsViewModel> Create(NewsViewModel news)
         {
@@ -43,6 +47,8 @@ namespace ApiMongo.Controllers
             return CreatedAtRoute("GetNews", new { id = result.Id.ToString() }, result);
         }
 
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Update(string id, NewsViewModel newsIn)
         {
@@ -56,6 +62,8 @@ namespace ApiMongo.Controllers
             return CreatedAtRoute("GetNews", new { id = news.Id.ToString() }, news);
         }
 
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [HttpDelete("{id:length(24)}")]
         public IActionResult Delete(string id)
         {
