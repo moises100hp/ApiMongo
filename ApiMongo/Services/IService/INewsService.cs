@@ -1,7 +1,7 @@
 ﻿using ApiMongo.Entities;
 using ApiMongo.ViewModels;
 
-namespace ApiMongo.Services
+namespace ApiMongo.Services.IService
 {
     public interface INewsService
     {

@@ -1,6 +1,6 @@
 ﻿using ApiMongo.Entities;
 
-namespace ApiMongo.Services
+namespace ApiMongo.Services.IService
 {
     public interface IUploadService
     {

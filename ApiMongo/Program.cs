@@ -1,6 +1,7 @@
 using ApiMongo.Infra;
 using ApiMongo.Mappers;
 using ApiMongo.Services;
+using ApiMongo.Services.IService;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;

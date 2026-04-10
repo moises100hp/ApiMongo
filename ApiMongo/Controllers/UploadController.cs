@@ -1,4 +1,4 @@
-﻿using ApiMongo.Services;
+﻿using ApiMongo.Services.IService;
 using ImageProcessor;
 using ImageProcessorCore.Plugins.WebP.Formats;
 using Microsoft.AspNetCore.Authorization;

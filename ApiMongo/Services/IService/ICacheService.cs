@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 
-namespace ApiMongo.Services
+namespace ApiMongo.Services.IService
 {
     public interface ICacheService
     {

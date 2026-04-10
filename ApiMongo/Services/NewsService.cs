@@ -1,5 +1,6 @@
 ﻿using ApiMongo.Entities;
 using ApiMongo.Infra;
+using ApiMongo.Services.IService;
 using ApiMongo.ViewModels;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
